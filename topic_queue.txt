@@ -1,0 +1,44 @@
+# Topic Queue for TrendSpotter Daily
+# Add new viral topics here, one per line
+# Format: Title|Category|Brief description
+
+The Secret Reason Why [Celebrity] Just Made a Shocking Career Decision|celebrity-gossip|Why a major celebrity surprised everyone with their career choice
+What [Celebrity] Posted Last Night Has Everyone Talking|celebrity-gossip|Social media explosion from celebrity post
+The Hidden Truth About [Celebrity]'s Recent Controversy|celebrity-gossip|Behind-the-scenes facts about celebrity drama
+This New TikTok Challenge Is Taking Over the Internet|viral-videos|Trending challenge everyone is participating in
+The YouTube Video That Broke the Internet This Week|viral-videos|Most viewed video of the week
+The Instagram Post That Caused a Frenzy|viral-videos|Viral social media post
+The Life-Changing Kitchen Hack That Will Save You Hours|lifestyle-hacks|Time-saving kitchen organization tip
+The Beauty Trick Influencers Don't Want You to Know|lifestyle-hacks|Secret beauty tip from professionals
+The Cleaning Method That Actually Works|lifestyle-hacks|Effective cleaning hack for busy people
+The Phone Accessory That Went Crazy Viral|tech-gadgets|Trending phone accessory on social media
+The Smart Home Device Everyone Is Buying|tech-gadgets|Popular smart home technology
+The Tech Gadget That Will Transform Your Life|tech-gadgets|Revolutionary tech product
+The Health Myth That Experts Say You Should Stop Believing|health-wellness|Debunking popular health fad
+The Workout Trend That Celebrities Swear By|health-wellness|Popular fitness trend among stars
+The Nutrition Myth That's Making You Gain Weight|health-wellness|Common nutrition misconception
+The Money-Saving Trick That Will Change Your Life|money-saving|Effective money-saving strategy
+The Budgeting Method That Actually Works|money-saving|Proven budgeting technique
+The Shopping Hack That Will Save You Hundreds|money-saving|Money-saving shopping tip
+The Pop Culture Moment Everyone Is Talking About|pop-culture|Major cultural moment
+The Meme That Broke the Internet|pop-culture|Viral meme sensation
+The TV Show Finale That Shocked Everyone|pop-culture|Controversial TV ending
+The Travel Hack That Will Save You Thousands|lifestyle-hacks|Money-saving travel tip
+The Relationship Advice That Will Transform Your Love Life|lifestyle-hacks|Relationship tips
+The Career Move That Will Accelerate Your Success|lifestyle-hacks|Career advancement advice
+The Fashion Trend That's Making a Comeback|pop-culture|Resurging fashion trend
+The Song That Everyone's Obsessed With|pop-culture|Viral music phenomenon
+The App That's Changing Everything|tech-gadgets|Revolutionary new app
+The Car Accessory That Drivers Are Going Crazy For|tech-gadgets|Trending car gadget
+The Pet Product That's Viral on Social Media|lifestyle-hacks|Popular pet-related product
+The Beauty Gadget That's Taking Over TikTok|lifestyle-hacks|Viral beauty device
+The Fitness Gadget That Trainers Recommend|health-wellness|Popular fitness equipment
+The Cooking Gadget That's Worth the Hype|lifestyle-hacks|Effective kitchen tool
+The Organization Hack That Will Declutter Your Life|lifestyle-hacks|Space-saving organization tip
+The Sleep Trick That Will Improve Your Health|health-wellness|Sleep improvement technique
+The Skincare Routine That's All the Rage|health-wellness|Trending skincare regimen
+The Investing Strategy That Young People Are Using|money-saving|Modern investment approach
+The Side Hustle That's Making People Rich|money-saving|Profitable side business idea
+The Food Trend That's Sweeping the Nation|pop-culture|Popular food phenomenon
+The Dance Challenge That's Breaking the Internet|viral-videos|Trending dance on social media
+The Prank Video That Got Millions of Views|viral-videos|Popular prank content
