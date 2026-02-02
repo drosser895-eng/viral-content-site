@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     addStickyHeader();
     setupAnimations();
     addSocialSharing();
+    addEnhancedVisualEffects();
 });
 
 function initializeViralFeatures() {
@@ -235,6 +236,7 @@ function copyCurrentUrl() {
             padding: 10px 15px;
             border-radius: 4px;
             z-index: 10000;
+            animation: fadeInOut 3s ease;
         `;
         document.body.appendChild(feedback);
         
@@ -256,7 +258,7 @@ function addEngagementFeatures() {
         top: 0;
         left: 0;
         width: 0%;
-        height: 3px;
+        height: 4px;
         background: linear-gradient(90deg, #FF6B35, #F7931E);
         z-index: 9999;
         transition: width 0.1s ease;
@@ -307,6 +309,67 @@ function addEngagementFeatures() {
     }
 }
 
+// Enhanced visual effects
+function addEnhancedVisualEffects() {
+    // Add hover effects to all links
+    const links = document.querySelectorAll('a');
+    links.forEach(link => {
+        link.addEventListener('mouseenter', function() {
+            this.style.transition = 'all 0.3s ease';
+            this.style.textShadow = '0 0 8px rgba(255, 107, 53, 0.5)';
+        });
+        
+        link.addEventListener('mouseleave', function() {
+            this.style.textShadow = 'none';
+        });
+    });
+    
+    // Add parallax effect to header
+    window.addEventListener('scroll', function() {
+        const scrolled = window.pageYOffset;
+        const rate = scrolled * -0.5;
+        const header = document.querySelector('header');
+        if (header) {
+            header.style.backgroundPosition = `center ${rate}px`;
+        }
+    });
+    
+    // Add image lazy loading with fade-in effect
+    const images = document.querySelectorAll('img[data-src]');
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        });
+    });
+    
+    images.forEach(img => imageObserver.observe(img));
+    
+    // Add scroll-triggered animations to text elements
+    const textElements = document.querySelectorAll('p, h2, h3, .category-tag, .date');
+    const textObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+                entry.target.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                textObserver.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    
+    textElements.forEach(el => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(20px)';
+        textObserver.observe(el);
+    });
+}
+
 // Initialize additional features after DOM content loads
 setTimeout(addEngagementFeatures, 1000);
 
@@ -348,3 +411,27 @@ document.addEventListener('keydown', (e) => {
         }
     }
 });
+
+// Add dynamic content loading indicators
+function addLoadingIndicators() {
+    const contentSections = document.querySelectorAll('.content-section');
+    contentSections.forEach(section => {
+        // Add shimmer effect while content loads
+        const shimmerDiv = document.createElement('div');
+        shimmerDiv.className = 'shimmer';
+        shimmerDiv.style.cssText = `
+            height: 20px;
+            margin: 10px 0;
+            border-radius: 4px;
+        `;
+        section.appendChild(shimmerDiv);
+        
+        // Remove after content loads
+        setTimeout(() => {
+            shimmerDiv.remove();
+        }, 1000);
+    });
+}
+
+// Initialize loading indicators
+addLoadingIndicators();

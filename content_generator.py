@@ -350,7 +350,7 @@ def update_index_page(new_post=None):
                     
                     post_links.append({
                         'title': title,
-                        'url': f"/{category}/{slug}/",
+                        'url': f"/posts/{category}/{slug}/",
                         'date': datetime.now().strftime("%B %d, %Y"),
                         'category': CATEGORIES[category]['name']
                     })

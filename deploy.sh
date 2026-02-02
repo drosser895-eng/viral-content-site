@@ -30,7 +30,7 @@ cp $SOURCE_DIR/feed.rss $BUILD_DIR/ 2>/dev/null || echo "No feed.rss found, will
 mkdir -p $BUILD_DIR/category
 
 for category in celebrity-gossip viral-videos lifestyle-hacks tech-gadgets health-wellness money-saving pop-culture; do
-    cat > $BUILD_DIR/category/${category}.html << EOF
+    cat > $BUILD_DIR/category/${category}/index.html << EOF
 <!DOCTYPE html>
 <html lang="en">
 <head>
