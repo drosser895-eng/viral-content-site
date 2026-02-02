@@ -316,8 +316,27 @@ def save_article_to_file(article, base_dir="posts"):
     html_content = html_content.replace('{{META_DESCRIPTION}}', article['meta_description'])
     html_content = html_content.replace('{{CONTENT}}', content_html)
     
-    # Save the article
-    filename = os.path.join(base_dir, article['category'], f"{article['slug']}.html")
+    # Fix absolute paths for GitHub Pages project path compatibility
+    # Since posts are in subdirectories like posts/category/slug/index.html, we need to go up several levels
+    html_content = html_content.replace('href="/', 'href="../../../')
+    html_content = html_content.replace('href="../../../"', 'href="../../../index.html"')  # Fix home link
+    # Fix specific navigation paths that should go up 3 levels from posts/category/slug/
+    html_content = html_content.replace('href="../../../category/', 'href="../../category/')
+    html_content = html_content.replace('href="../../../contact', 'href="../../contact.html')
+    html_content = html_content.replace('href="../../../privacy-policy', 'href="../../privacy-policy.html')
+    html_content = html_content.replace('href="../../../affiliate-disclosure', 'href="../../affiliate-disclosure.html')
+    html_content = html_content.replace('href="../../../terms-of-service', 'href="../../terms-of-service.html')
+    
+    # Also fix the relative path in the content section
+    content_html_fixed = content_html.replace(f'href="/category/{article["category"]}/"', f'href="../../category/{article["category"]}/"')
+    html_content = html_content.replace('{{CONTENT}}', content_html_fixed)
+    
+    # Create directory for the article and save as index.html for clean URLs
+    article_dir = os.path.join(base_dir, article['category'], article['slug'])
+    os.makedirs(article_dir, exist_ok=True)
+    
+    # Save the article as index.html in its own directory
+    filename = os.path.join(article_dir, 'index.html')
     with open(filename, 'w', encoding='utf-8') as f:
         f.write(html_content)
     
@@ -361,10 +380,12 @@ def update_index_page(new_post=None):
     # Create HTML for post grid
     posts_html = ""
     for post in post_links:
+        # Convert absolute URL to relative for index page
+        relative_url = post['url'].replace('/', './')
         posts_html += f"""
         <div class="post-card">
             <span class="category-tag">{post['category']}</span>
-            <h3><a href="{post['url']}">{post['title']}</a></h3>
+            <h3><a href="{relative_url}">{post['title']}</a></h3>
             <div class="date">{post['date']}</div>
             <p>Trending content that's capturing attention...</p>
         </div>
@@ -373,6 +394,14 @@ def update_index_page(new_post=None):
     # Replace in template
     html_content = template.replace('{{POSTS}}', posts_html)
     
+    # Fix absolute paths in the index page template for GitHub Pages compatibility
+    html_content = html_content.replace('href="/category/', 'href="category/')
+    html_content = html_content.replace('href="/contact', 'href="contact.html')
+    html_content = html_content.replace('href="/privacy-policy', 'href="privacy-policy.html')
+    html_content = html_content.replace('href="/affiliate-disclosure', 'href="affiliate-disclosure.html')
+    html_content = html_content.replace('href="/terms-of-service', 'href="terms-of-service.html')
+    html_content = html_content.replace('href="/">Home</a>', 'href="./">Home</a>')
+    
     # Save index page
     with open('index.html', 'w', encoding='utf-8') as f:
         f.write(html_content)
@@ -380,14 +409,14 @@ def update_index_page(new_post=None):
 def generate_sitemap():
     """Generate sitemap.xml for SEO"""
     urls = [
-        {"loc": "https://trendspotter-daily.com/", "lastmod": datetime.now().strftime("%Y-%m-%d"), "changefreq": "daily", "priority": "1.0"},
-        {"loc": "https://trendspotter-daily.com/affiliate-disclosure/", "lastmod": datetime.now().strftime("%Y-%m-%d"), "changefreq": "monthly", "priority": "0.8"},
+        {"loc": "https://drosser895-eng.github.io/viral-content-site/", "lastmod": datetime.now().strftime("%Y-%m-%d"), "changefreq": "daily", "priority": "1.0"},
+        {"loc": "https://drosser895-eng.github.io/viral-content-site/affiliate-disclosure.html", "lastmod": datetime.now().strftime("%Y-%m-%d"), "changefreq": "monthly", "priority": "0.8"},
     ]
     
     # Add category pages
     for cat_key, cat_info in CATEGORIES.items():
         urls.append({
-            "loc": f"https://trendspotter-daily.com/category/{cat_key}/",
+            "loc": f"https://drosser895-eng.github.io/viral-content-site/category/{cat_key}/",
             "lastmod": datetime.now().strftime("%Y-%m-%d"),
             "changefreq": "hourly",
             "priority": "0.9"
@@ -399,10 +428,17 @@ def generate_sitemap():
         if os.path.exists(category_dir):
             posts = os.listdir(category_dir)
             for post in posts:
-                if post.endswith('.html'):
+                if post.endswith('.html'):  # Old format
                     slug = post[:-5]
                     urls.append({
-                        "loc": f"https://trendspotter-daily.com/{category}/{slug}/",
+                        "loc": f"https://drosser895-eng.github.io/viral-content-site/posts/{category}/{slug}/",
+                        "lastmod": datetime.now().strftime("%Y-%m-%d"),
+                        "changefreq": "weekly",
+                        "priority": "0.7"
+                    })
+                elif os.path.isdir(os.path.join(category_dir, post)):  # New directory format
+                    urls.append({
+                        "loc": f"https://drosser895-eng.github.io/viral-content-site/posts/{category}/{post}/",
                         "lastmod": datetime.now().strftime("%Y-%m-%d"),
                         "changefreq": "weekly",
                         "priority": "0.7"
@@ -424,6 +460,107 @@ def generate_sitemap():
     
     with open('sitemap.xml', 'w', encoding='utf-8') as f:
         f.write(sitemap_xml)
+
+def create_category_pages():
+    """Create category index pages for each category"""
+    # Read the category template or create one
+    category_template = '''<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{CATEGORY_NAME}} - TrendSpotter</title>
+    <meta name="description" content="{{CATEGORY_DESCRIPTION}}">
+    <base href="/viral-content-site/">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js"></script>
+</head>
+<body>
+    <header>
+        <h1><a href="./">TrendSpotter</a></h1>
+        <nav>
+            <ul>
+                <li><a href="./">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    
+    <main>
+        <h2>{{CATEGORY_NAME}}</h2>
+        <p>{{CATEGORY_DESCRIPTION}}</p>
+        <div class="articles-list">
+            {{ARTICLES}}
+        </div>
+    </main>
+    
+    <footer>
+        <p>&copy; 2026 TrendSpotter. All rights reserved.</p>
+    </footer>
+</body>
+</html>'''
+
+    for category_key, category_info in CATEGORIES.items():
+        # Create category directory
+        category_dir = os.path.join('category', category_key)
+        os.makedirs(category_dir, exist_ok=True)
+        
+        # Get recent posts for this category
+        category_posts_dir = os.path.join('posts', category_key)
+        posts_html = ""
+        
+        if os.path.exists(category_posts_dir):
+            posts = sorted(os.listdir(category_posts_dir), reverse=True)[:10]  # Get 10 most recent
+            for post_file in posts:
+                if post_file.endswith('.html'):
+                    slug = post_file[:-5]  # Remove .html
+                    post_path = os.path.join(category_posts_dir, post_file)
+                    
+                    # Extract title from the post file
+                    with open(post_path, 'r', encoding='utf-8') as pf:
+                        content = pf.read()
+                        import re
+                        title_match = re.search(r'<title>(.*?)</title>', content)
+                        if not title_match:
+                            title_match = re.search(r'<h1[^>]*>(.*?)</h1>', content)
+                        
+                        title = title_match.group(1) if title_match else slug.replace('-', ' ').title()
+                    
+                    posts_html += f'''
+            <article class="post-excerpt">
+                <h3><a href="../posts/{category_key}/{slug}/">{title}</a></h3>
+                <p>Check out this trending content...</p>
+                <div class="post-meta">
+                    <span class="date">{datetime.now().strftime("%B %d, %Y")}</span>
+                    <span class="category"><a href="./">{category_info["name"]}</a></span>
+                </div>
+            </article>
+            '''
+        
+        # Fill in the template
+        filled_template = category_template.replace('{{CATEGORY_NAME}}', category_info["name"])
+        filled_template = filled_template.replace('{{CATEGORY_DESCRIPTION}}', category_info["description"])
+        filled_template = filled_template.replace('{{ARTICLES}}', posts_html)
+        
+        # Fix absolute paths for GitHub Pages project path compatibility
+        filled_template = filled_template.replace('href="/css/', 'href="../css/')
+        filled_template = filled_template.replace('src="/js/', 'src="../js/')
+        filled_template = filled_template.replace('href="/">', 'href="../">')
+        filled_template = filled_template.replace('href="/contact', 'href="../contact.html')
+        filled_template = filled_template.replace('href="/privacy-policy', 'href="../privacy-policy.html')
+        filled_template = filled_template.replace('href="/affiliate-disclosure', 'href="../affiliate-disclosure.html')
+        filled_template = filled_template.replace('href="/terms-of-service', 'href="../terms-of-service.html')
+        filled_template = filled_template.replace('href="/about', 'href="../about.html')
+        filled_template = filled_template.replace('href="/category/', 'href="../category/')
+        filled_template = filled_template.replace('href="/posts/', 'href="../posts/')
+        
+        # Save as index.html in the category directory
+        category_index_path = os.path.join(category_dir, 'index.html')
+        with open(category_index_path, 'w', encoding='utf-8') as f:
+            f.write(filled_template)
+        
+        print(f"Created category page: {category_index_path}")
 
 def generate_rss_feed():
     """Generate RSS feed for the site"""
@@ -461,6 +598,10 @@ def main():
     update_index_page(article)
     print("Updated index page with new article")
     
+    # Create category pages
+    create_category_pages()
+    print("Created category index pages")
+    
     # Generate sitemap
     generate_sitemap()
     print("Generated sitemap.xml")
@@ -473,6 +614,7 @@ def main():
     print("Files created:")
     print(f"- Article: {filename}")
     print("- Index page: index.html")
+    print("- Category pages: /category/*")
     print("- Sitemap: sitemap.xml")
     print("- RSS feed: feed.rss")
 

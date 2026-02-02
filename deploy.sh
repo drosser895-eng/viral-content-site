@@ -359,13 +359,15 @@ echo -e "${YELLOW}Generating initial viral content...${NC}"
 cd $SOURCE_DIR
 python3 content_generator.py
 
-# Copy generated content to build directory
+# Copy ALL generated content to build directory (this includes the updated category pages)
 cp -r $SOURCE_DIR/posts $BUILD_DIR/ 2>/dev/null || echo "No posts directory yet, will be created"
-
-# Copy generated index page and other files
+cp -r $SOURCE_DIR/category $BUILD_DIR/ 2>/dev/null || echo "No category directory yet, will be created"
 cp $SOURCE_DIR/index.html $BUILD_DIR/ 2>/dev/null || echo "No index.html generated yet"
 cp $SOURCE_DIR/sitemap.xml $BUILD_DIR/ 2>/dev/null || echo "No sitemap.xml generated yet"
 cp $SOURCE_DIR/feed.rss $BUILD_DIR/ 2>/dev/null || echo "No feed.rss generated yet"
+cp $SOURCE_DIR/contact.html $BUILD_DIR/ 2>/dev/null || echo "No contact.html generated yet"
+cp $SOURCE_DIR/privacy-policy.html $BUILD_DIR/ 2>/dev/null || echo "No privacy-policy.html generated yet"
+cp $SOURCE_DIR/affiliate-disclosure.html $BUILD_DIR/ 2>/dev/null || echo "No affiliate-disclosure.html generated yet"
 
 echo -e "${GREEN}Initial viral content generated${NC}"
 
